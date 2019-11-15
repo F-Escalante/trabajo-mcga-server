@@ -1,47 +1,48 @@
+
 const express = require('express')
 const cors = require('cors')
-const bodyParse = require('body-parser')
-
-const myUser = {
-
-    email: "federico_escalante@outlook.com",
-    password: "1234"
-}
+const bodyParser = require('body-parser')
+const mongoose = require('mongoose');
 const app = express()
-app.use(bodyParse.json())
+
+// const url = 'mongodb+srv://esteban:123calculadora@cluster0-ovnju.mongodb.net/test?retryWrites=true&w=majority';
+
+// mongoose.connect(url, { useNewUrlParser: true }, function (error) {
+//   console.log(error)
+// });
+
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
 app.use(cors())
 
-app.get("/", (req, res) => {
-    res.status(200).send("server working")
+app.get('/', (req, res) => {
+  res.status(200).send("<h1>Test server</h1>")
 })
 
-app.post("/login", (req, res) => {
-    console.log(req.body)
-    if(!req.body.email){
-       return res.status(400).send({
-            succes:false,
-            message: "Email is required",
-        })
-    }
-    if(!req.body.password){
-        return res.status(400).send({
-             succes:false,
-             message: "Pasword is required",
-         })
-     }
-     if (req.body.email != myUser.email || req.body.password !== myUser.password){
-        return res.status(401).send({
-            succes:false,
-            message: "User tu hermana",})
-     }
-    return res.status(200).send({
-        succes: true,
-        message: "User logged",
-        user: myUser,
-
+app.post('/login', (req, res) => {
+  const myUser = {
+    email: 'frare.esteban@gmail.com',
+    password: '123123'
+  }
+  if (req.body.email !== myUser.email) {
+    return res.status(400).send({
+      error: true,
+      message: "Email is not registered"
     })
-})
-app.listen(4000, () => {
-    console.log("Server working on localhost:4000")
+  }
+  if (req.body.password !== myUser.password) {
+    return res.status(400).send({
+      error: true,
+      message: "Password is not correct"
+    })
+  }
+  return res.status(200).send({
+    success: true,
+    message: 'User logged successfully',
+    user: myUser,
+  })
 })
 
+app.listen(4000, () => {
+  console.log('Servidor corriendo en puerto 4000')
+})
